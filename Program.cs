@@ -44,33 +44,43 @@ namespace AddThreads
             
         }
 
-        static void Main()
+        private static void Main()
         {
 
             List<Task<int>> alltasks = new List<Task<int>>();
 
-            Task<int> tasks = new Task<int>(() =>
+
+
+            foreach (int[] data in Data)
             {
-                foreach (int[] data in Data)
+                Task<int> tasks = new Task<int>(() =>
                 {
                     int smallest = FindSmallest(data);
                     Console.WriteLine(String.Join(", ", data) + ": " + smallest);
-                    
+
                     //Task<int> needs to return a value
                     return smallest;
-                }
-            });
+                });
 
-            alltasks.Add(tasks);
-            tasks.Start();
+                alltasks.Add(tasks);
+                tasks.Start();
+            }
 
+            Console.WriteLine("Smallest of all arrays: \n");
+
+            //A list to hold all of the smallest ints from each array
+            List<int> smallestOfAllInts = new List<int>();
+
+            foreach (var task in alltasks)
+            {
+                Console.WriteLine(task.Result + " ");
+                smallestOfAllInts.Add(task.Result);
+            }
+            Console.WriteLine("Smallest of all: " + FindSmallest(smallestOfAllInts.ToArray()));
 
         }
 
-        public static void Find()
-        {
-            
-        }
+       
 
     }
 }
