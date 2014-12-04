@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace AddThreads
 
         private static int FindSmallest(int[] numbers)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             if (numbers.Length < 1)
             {
                 throw new ArgumentException("There must be at least one element in the array");
@@ -32,16 +35,42 @@ namespace AddThreads
                     smallestSoFar = number;
                 }
             }
+            stopwatch.Stop();
+            Console.WriteLine("Timer: {0}", stopwatch.Elapsed);
             return smallestSoFar;
+
+            
+
+            
         }
 
         static void Main()
         {
-            foreach (int[] data in Data)
+
+            List<Task<int>> alltasks = new List<Task<int>>();
+
+            Task<int> tasks = new Task<int>(() =>
             {
-                int smallest = FindSmallest(data);
-                Console.WriteLine(String.Join(", ", data) + ": " + smallest);
-            }
+                foreach (int[] data in Data)
+                {
+                    int smallest = FindSmallest(data);
+                    Console.WriteLine(String.Join(", ", data) + ": " + smallest);
+                    
+                    //Task<int> needs to return a value
+                    return smallest;
+                }
+            });
+
+            alltasks.Add(tasks);
+            tasks.Start();
+
+
         }
+
+        public static void Find()
+        {
+            
+        }
+
     }
 }
